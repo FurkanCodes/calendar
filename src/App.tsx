@@ -9,6 +9,7 @@ import "primereact/resources/themes/bootstrap4-dark-blue/theme.css";
 import { useAppDispatch, useAppSelector } from "./store/store";
 import { setDates } from "./slice/dateSlice";
 
+//ESKİ FONKSİYON, MUI
 const UTCDate = (date: string | number | Date) => {
   console.log("Original Date:", date);
   const parsedDate = new Date(date);
@@ -22,11 +23,13 @@ const UTCDate = (date: string | number | Date) => {
   return _utcDate;
 };
 
+//This func converts the date from backend, from utc to Local
 const utcToLocal = (utcDate: string | number | Date) => {
   const date = new Date(utcDate);
   return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
 };
 
+//This one converts the local date that is being sent to backend, from local to UTC
 const localToUTC = (localDate: string | number | Date) => {
   const parsedDate = new Date(localDate);
   const _utcDate = new Date(parsedDate.toISOString());
@@ -43,14 +46,14 @@ function App() {
   const { dates } = useAppSelector((state: any) => state.date);
 
   useEffect(() => {
-    console.log("Current dates in state (as strings):", dates);
+    console.log("State'deki dateler:", dates);
   }, [dates]);
 
   const handleInput = (e: any) => {
-    const selectedDate = e.value; // Assuming e.value is a Date object
-    dispatch(setDates({ startDate: localToUTC(selectedDate) }));
+    const selectedDate = e.value; // e.value bir Date objesi
+    dispatch(setDates({ startDate: localToUTC(selectedDate) })); // Conversiton from local to UTC happens here
   };
-  // Ensure the Calendar component gets a Date object
+  // Calender component should receive DATE objet otherwise value does not work.
   const calendarValue =
     dates && dates.startDate ? utcToLocal(dates.startDate) : null;
 
